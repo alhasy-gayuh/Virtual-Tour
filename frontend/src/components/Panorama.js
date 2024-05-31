@@ -1,52 +1,28 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
-import { VRButton } from 'three/examples/jsm/webxr/VRButton';
+import { VRButton, XR, Controllers } from '@react-three/xr';
 
 const Panorama = ({ vrImage }) => {
     const texture = useLoader(THREE.TextureLoader, vrImage);
-    const sphereRef = useRef();
-    const vrButtonRef = useRef(null);
-    const rendererRef = useRef();
-
-    useEffect(() => {
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.xr.enabled = true;
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        // Create VR button and append it to the body
-        const vrButton = VRButton.createButton(renderer);
-        document.body.appendChild(vrButton);
-        vrButtonRef.current = vrButton;
-        rendererRef.current = renderer;
-
-        return () => {
-            // Remove VR button and dispose renderer
-            if (vrButtonRef.current) {
-                document.body.removeChild(vrButtonRef.current);
-            }
-            if (rendererRef.current) {
-                rendererRef.current.dispose();
-            }
-        };
-    }, []);
 
     return (
-        <Canvas
-            gl={{ antialias: true }}
-            onCreated={({ gl }) => {
-                rendererRef.current = gl;
-                gl.xr.enabled = true;
-                gl.setSize(window.innerWidth, window.innerHeight);
-            }}
-        >
-            <OrbitControls enableZoom={false} />
-            <mesh ref={sphereRef}>
-                <sphereGeometry args={[500, 60, 40]} />
-                <meshBasicMaterial map={texture} side={THREE.BackSide} />
-            </mesh>
-        </Canvas>
+        <>
+            <VRButton />
+            <Canvas>
+                <XR>
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} />
+                    <OrbitControls enableZoom={false} enablePan={false} />
+                    <mesh>
+                        <sphereGeometry args={[500, 60, 40]} scale={[-1, 1, 1]} />
+                        <meshBasicMaterial map={texture} side={THREE.BackSide} />
+                    </mesh>
+                    <Controllers />
+                </XR>
+            </Canvas>
+        </>
     );
 };
 
