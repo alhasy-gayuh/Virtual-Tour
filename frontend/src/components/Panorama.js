@@ -7,31 +7,40 @@ import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 const Panorama = ({ vrImage }) => {
     const texture = useLoader(THREE.TextureLoader, vrImage);
     const sphereRef = useRef();
+    const vrButtonRef = useRef(null);
+    const rendererRef = useRef();
 
     useEffect(() => {
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.xr.enabled = true;
         renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
 
+        // Create VR button and append it to the body
         const vrButton = VRButton.createButton(renderer);
         document.body.appendChild(vrButton);
-
-        const handleResize = () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        };
-
-        window.addEventListener('resize', handleResize);
+        vrButtonRef.current = vrButton;
+        rendererRef.current = renderer;
 
         return () => {
-            document.body.removeChild(vrButton);
-            document.body.removeChild(renderer.domElement);
-            window.removeEventListener('resize', handleResize);
+            // Remove VR button and dispose renderer
+            if (vrButtonRef.current) {
+                document.body.removeChild(vrButtonRef.current);
+            }
+            if (rendererRef.current) {
+                rendererRef.current.dispose();
+            }
         };
     }, []);
 
     return (
-        <Canvas>
+        <Canvas
+            gl={{ antialias: true }}
+            onCreated={({ gl }) => {
+                rendererRef.current = gl;
+                gl.xr.enabled = true;
+                gl.setSize(window.innerWidth, window.innerHeight);
+            }}
+        >
             <OrbitControls enableZoom={false} />
             <mesh ref={sphereRef}>
                 <sphereGeometry args={[500, 60, 40]} />
