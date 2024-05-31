@@ -9,18 +9,29 @@ const Panorama = ({ vrImage }) => {
     const sphereRef = useRef();
 
     useEffect(() => {
-        const renderer = new THREE.WebGLRenderer();
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.xr.enabled = true;
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
         const vrButton = VRButton.createButton(renderer);
         document.body.appendChild(vrButton);
 
+        const handleResize = () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        };
+
+        window.addEventListener('resize', handleResize);
+
         return () => {
             document.body.removeChild(vrButton);
+            document.body.removeChild(renderer.domElement);
+            window.removeEventListener('resize', handleResize);
         };
     }, []);
 
     return (
-        <Canvas vr={{ enabled: true }}>
+        <Canvas>
             <OrbitControls enableZoom={false} />
             <mesh ref={sphereRef}>
                 <sphereGeometry args={[500, 60, 40]} />
