@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 
-const authRoutes = require('./routes/auth');
+const authRoutes = require('./routes/admin');
 const tourRoutes = require('./routes/tours');
 const sequelize = require('./db');
 const errorHandler = require('./middleware/errorHandler');
@@ -17,6 +17,8 @@ const limiter = rateLimit({
     message: 'Too many requests from this IP, please try again after 15 minutes'
 });
 
+require('dotenv').config();
+
 app.use(limiter);
 
 app.use(bodyParser.json());
@@ -25,13 +27,13 @@ app.use(cors());
 // Sajikan file statis dari folder uploads
 app.use('/uploads', express.static('uploads'));
 
-app.use('/api/auth', authRoutes);
+app.use('/api/admins', authRoutes);
 app.use('/api/tours', tourRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 sequelize.sync().then(() => {
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}.`);

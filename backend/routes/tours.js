@@ -18,33 +18,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Route untuk menambahkan tour baru
-router.post('/tours', upload.fields([{ name: 'image' }, { name: 'vrImage' }]), async (req, res) => {
-    // Debugging log untuk request body dan file
-    console.log('Request received:', req.body);
-    console.log('Files received:', req.files);
-
+router.post('/', auth, upload.fields([{ name: 'image' }, { name: 'vrImage' }]), async (req, res) => {
     const { name, description } = req.body;
     const image = req.files['image'] ? req.files['image'][0].path : null;
     const vrImage = req.files['vrImage'] ? req.files['vrImage'][0].path : null;
 
-    // Debugging log untuk path gambar yang diupload
-    console.log('Image path:', image);
-    console.log('VR Image path:', vrImage);
-
     try {
-        // Debugging log sebelum query database
-        console.log('Inserting tour into database:', { name, description, image, vrImage });
-
-        const [result] = await db.query('INSERT INTO tours (name, description, image, vrImage) VALUES (?, ?, ?, ?)', [name, description, image, vrImage]);
-
-        // Debugging log setelah query berhasil
-        console.log('Tour inserted with ID:', result.insertId);
-
-        res.status(201).json({ id: result.insertId, name, description, image, vrImage });
+        const newTour = await Tour.create({ name, description, image, vrImage });
+        res.status(201).json(newTour);
     } catch (error) {
-        // Debugging log untuk error
         console.error('Error inserting tour:', error);
-
         res.status(500).json({ message: 'Something went wrong!' });
     }
 });
@@ -57,26 +40,20 @@ router.get('/', async (req, res) => {
 
 // Get tour By ID
 router.get('/:id', async (req, res) => {
-
     try {
-        const response = await Tour.findOne({
-            where:{
-                id : req.params.id
+        const tour = await Tour.findOne({
+            where: {
+                id: req.params.id
             }
-        })
-        res.json(response);
+        });
+        if (!tour) {
+            return res.status(404).json({ error: 'Tour not found' });
+        }
+        res.json(tour);
     } catch (error) {
-        console.log(error.message)
+        console.error('Error fetching tour:', error);
+        res.status(500).json({ message: 'Something went wrong!' });
     }
-});
-
-// Create a new tour
-router.post('/', auth, upload.fields([{ name: 'image' }, { name: 'vrImage' }]), async (req, res) => {
-    const { name, description } = req.body;
-    const image = req.files['image'][0].path;
-    const vrImage = req.files['vrImage'][0].path;
-    const newTour = await Tour.create({ name, description, image, vrImage });
-    res.json(newTour);
 });
 
 // Update a tour

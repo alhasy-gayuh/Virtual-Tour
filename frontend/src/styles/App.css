@@ -1,4 +1,239 @@
-/* src/styles/App.css */
-body {
-    @apply bg-blue-100 text-gray-900;
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* HeroSection.css */
+.hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Dark overlay for better readability */
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 20px;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 3rem; /* Responsive font size */
+    font-weight: bold;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.8); /* Text shadow for better visibility */
+}
+
+.hero p {
+    font-size: 1.5rem;
+    margin-top: 0.5em;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+}
+
+.hero a {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.hero a:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    .hero p {
+        font-size: 1.2rem;
+    }
+}
+
+/* ======================================= */
+/* FeaturedTours.css */
+
+.featured-tours {
+    padding: 40px 20px;
+    background: #f9f9f9; /* Light background for the section */
+}
+
+.featured-tours h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* FeaturedTours.css */
+.featured-tours .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Menggunakan 3 kolom dengan lebar yang sama */
+    gap: 20px;
+    justify-content: center; /* Menengahkan konten jika kurang dari tiga kolom */
+    max-width: 1200px; /* Mengatur lebar maksimum */
+    margin: auto; /* Rata tengah secara horizontal */
+}
+
+/* Menyesuaikan grid untuk responsif */
+@media (max-width: 1024px) {
+    .featured-tours .grid {
+        grid-template-columns: repeat(2, 1fr); /* Dua kolom untuk tablet */
+    }
+}
+
+@media (max-width: 768px) {
+    .featured-tours .grid {
+        grid-template-columns: 1fr; /* Satu kolom untuk mobile */
+    }
+}
+
+
+.featured-tours .card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    overflow: hidden; /* Ensures the image doesn't overflow the border radius */
+    transition: transform 0.3s ease-in-out; /* Smooth transform on hover */
+}
+
+.featured-tours .card:hover {
+    transform: translateY(-5px); /* Slight raise effect on hover */
+}
+
+.featured-tours img {
+    width: 100%;
+    height: 200px; /* Fixed height for uniformity */
+    object-fit: cover; /* Ensures images cover the area nicely */
+}
+
+.featured-tours .content {
+    padding: 15px;
+    text-align: left;
+}
+
+.featured-tours .title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.featured-tours .description {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.featured-tours .learn-more-btn {
+    display: block;
+    background-color: #0056b3;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 15px;
+}
+
+.featured-tours .learn-more-btn:hover {
+    background-color: #003d7a; /* Darker shade for hover effect */
+}
+
+/* ======================================= */
+
+/* FeaturedTours.css */
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Menambahkan alignment tengah untuk item-item di dalam kartu */
+    text-align: center; /* Menyelaraskan teks ke tengah */
+}
+
+.card img {
+    width: 100%;
+    height: 200px; /* Atau sesuaikan sesuai kebutuhan */
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 15px;
+    width: 100%; /* Memastikan content mengambil lebar penuh */
+}
+
+.card-actions {
+    width: 100%; /* Memastikan tombol mengambil lebar penuh */
+    padding: 10px;
+    display: flex;
+    justify-content: center; /* Menyelaraskan tombol ke tengah */
+}
+
+.link-button {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    background-color: #0056b3;
+    transition: background-color 0.3s ease;
+}
+
+.link-button:hover {
+    background-color: #003d7a;
+}
+
+/* Modal */
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 500px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
 }

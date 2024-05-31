@@ -1,24 +1,32 @@
-import React, { useRef } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, VRButton } from '@react-three/drei';
-import { TextureLoader } from 'three';
-import { useLoader } from '@react-three/fiber';
+import React, { useRef, useEffect } from 'react';
+import { Canvas, useLoader } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
+import * as THREE from 'three';
+import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 
 const Panorama = ({ vrImage }) => {
-    const texture = useLoader(TextureLoader, vrImage);
+    const texture = useLoader(THREE.TextureLoader, vrImage);
     const sphereRef = useRef();
 
+    useEffect(() => {
+        const renderer = new THREE.WebGLRenderer();
+        renderer.xr.enabled = true;
+        const vrButton = VRButton.createButton(renderer);
+        document.body.appendChild(vrButton);
+
+        return () => {
+            document.body.removeChild(vrButton);
+        };
+    }, []);
+
     return (
-        <>
-            <VRButton />
-            <Canvas>
-                <OrbitControls enableZoom={false} />
-                <mesh ref={sphereRef}>
-                    <sphereGeometry args={[500, 60, 40]} />
-                    <meshBasicMaterial map={texture} side={2} />
-                </mesh>
-            </Canvas>
-        </>
+        <Canvas vr={{ enabled: true }}>
+            <OrbitControls enableZoom={false} />
+            <mesh ref={sphereRef}>
+                <sphereGeometry args={[500, 60, 40]} />
+                <meshBasicMaterial map={texture} side={THREE.BackSide} />
+            </mesh>
+        </Canvas>
     );
 };
 
